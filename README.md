@@ -1,3 +1,7 @@
-# hello-world
+# Practice
 
-Just want to show something differetly!
+**emcee package
+**cosmolopy package
+
+1/7/2016 draw the power spectrum 
+         emcee tutorial
