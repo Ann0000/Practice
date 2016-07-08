@@ -1,80 +1,65 @@
 import cosmolopy
 import numpy as np
-import time
-tStart=time.time()
 import matplotlib.pyplot as pl
 from ed_functions_memo2 import sigma_v_function
-from ed_functions_memo2 import sigma_v_nonlinear
+from ed_functions_cosmology2 import Ez
 
 
-z=np.arange(0.1,1.,0.01)
-#omega_m=np.arange(0.2,0.4,0.01)
-#sigma_8=np.arange(0.5,1.5,0.05)
-#np_sigma_nl=np.frompyfunc(sigma_v_nonlinear,3,1)
 np_sigma=np.frompyfunc(sigma_v_function,3,1)
 
 def  sigma_approx(z,sigma_8,omega_m):
-    c_z1=0.06582+4.06445*1E-5*np.exp(17.453*omega_m)
-    c_z2=0.36981+33.76946*np.exp(-13.83038*omega_m)
-    c_z3=-9.42233+27.8714*omega_m-31.1962*omega_m**2
-    c_z4=1.22587+1.15218*omega_m-6.72929*omega_m**2
-    sigma_v=0.006*sigma_8*np.exp(c_z1*z**-1+c_z2*z**1.5+c_z3*z+c_z4)
+    c_z1=0.12201-0.43413*omega_m+1.55192*omega_m**2-1.64078*omega_m**3
+    c_z2=-4.4354+2.32415*np.exp(-11.335*omega_m)
+    c_z3=2.68
+    c_z4=1.1608-0.8429*omega_m
+
+    sigma_v=0.006*sigma_8*np.exp(c_z1*z**-1+c_z2*z+c_z3*z**1.3+c_z4)
+
     return sigma_v
 
-sigma_8=2.8
-omega_m=0.36
-sigma_v1 = -np_sigma(z, sigma_8,omega_m )
-tEnd=time.time()
-print(tEnd-tStart)
-sigma_approx1 = sigma_approx(z, sigma_8, omega_m)
+"""z=0.2
+omega_m=20
+sigma_8=20
+i=0
+j=0
+sigma_v1=-np_sigma(z,0.2,0.1)
+for i in range(omega_m):
+    omega_m_i=0.2+0.01*i
+    for j in range(sigma_8):
+        sigma_8_j=j*0.15+0.1
+        sigma_v1_i_j=-np_sigma(z, sigma_8_j,omega_m_i )
+        sigma_v1.append(sigma_v1_i_j)
+        print(sigma_v1)
 
-pl.ylabel('sigma_v1 & sigma_approx1')
-pl.xlabel('redshift z')
-pl.plot(z, sigma_v1, color='r')
-pl.plot(z, sigma_approx1, "--")
-pl.title('sigma_8:1.,omega_m:0.36')
+#sigma_approx1 = sigma_approx(z, sigma_8, omega_m)
+#sigma_v1=np.array([(x*y) for x in x_axis for y in y_axis ])
+print(sigma_v1.size)
+sigma_v1=np.reshape(sigma_v1,(20,20))"""
+
+z=0.2
+omega_m=np.arange(0.2,0.4,0.01)
+sigma_8=np.arange(0.,3.,0.1)
+sigma_8_j=0.1
+omega_m_i=0.2
+n_omega=omega_m.shape
+print(n_omega)
+n_sigma=sigma_8.shape
+print(np_sigma(z,sigma_8_j,omega_m_i))
+sigma_v=np.array([(sigma_8_j*omega_m_i)   for sigma_8_j in sigma_8 for omega_m_i in omega_m])
+
+sigma_v=sigma_v.reshape(30,20)
+
+
+
+
+pl.ylabel('sigma_8')
+pl.xlabel('omega_m')
+pl.contour(omega_m,sigma_8,sigma_v)
+pl.title('z=0.2')
 pl.show()
 
-"""omega_m100=20
-sigma_8=1.
-for i in range(omega_m100) :
-    omega_m = (i+20)* 1. / 100
-    print(omega_m)
-    sigma_v1 = -np_sigma(z, sigma_8,omega_m )
-    sigma_approx1 = sigma_approx(z, sigma_8, omega_m)
-    pl.ylabel('sigma_v1 & sigma_approx1')
-    pl.xlabel('redshift z')
-    pl.plot(z, sigma_v1, color='r')
-    pl.plot(z, sigma_approx1, "--")
-    pl.title("sigma_8:1.,(omega_m-0.2)*100:{0:20}".format(i))
-    pl.show()
-"""
 
 
 
-
-"""y1=0.006*np.exp(0.07*z**-1+z**1.5-4*z+0.6)
-sigma_v2=-np_sigma(z,0.6,0.31)
-y2=0.005*np.exp(0.09*z**-1+z**1.5-4*z+0.6)
-sigma_v3=-np_sigma(z,0.6,0.27)
-y3=0.0055*np.exp(0.08*z**-1+z**1.5-4*z+0.6)"""
-#sigma_v4=-np_sigma(0.3,0.8,omega_m)
-"""pl.plot(z,y1,color='b')
-pl.plot(z,0.01*sigma_v1/y1,color='g')
-pl.plot(z,sigma_v2,'--',color='r')
-pl.plot(z,y2,'--',color='b')
-pl.plot(z,0.01*sigma_v2/y2,'--',color='g')
-pl.plot(z,sigma_v3,'.',color='r')
-pl.plot(z,y3,'.',color='b')
-pl.plot(z,0.01*sigma_v3/y3,'.',color='g')
-#pl.plot(omega_m,sigma_v4,color='k')"""
-
-
-
-
-
-
-# The first try to draw plot sigma_v--z.
-# The next step is to vary sigma_8 and get the function [seems a quite hard job!
 
 
